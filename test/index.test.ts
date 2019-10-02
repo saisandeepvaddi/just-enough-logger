@@ -1,6 +1,6 @@
-import Logger, { ILoggerOptions } from "../src";
+import Logger from "../src";
 import fs from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
 
 jest.mock("fs");
 let originalConsole = global.console;
@@ -13,15 +13,6 @@ global.console = {
 };
 
 describe("All Tests", () => {
-  test("creates a log file if doesn't exist", () => {
-    let options: ILoggerOptions = {
-      transports: ["file", "console"],
-    };
-    new Logger(options);
-    expect(fs.existsSync).toHaveBeenCalled();
-    expect(fs.openSync).toHaveBeenCalled();
-  });
-
   test("only uses specified transports", () => {
     let fileLogger = new Logger({
       transports: ["file"],
@@ -65,6 +56,18 @@ describe("All Tests", () => {
 
     expect(fs.existsSync).toHaveBeenCalledWith(logFilePath);
     expect(fs.openSync).toHaveBeenCalledWith(logFilePath, "w");
+
+    jest.resetAllMocks();
+
+    // Case where dir doesn't exist
+    let newLogFilePath = resolve(__dirname, "my_logs", "test.log");
+    new Logger({
+      file: newLogFilePath,
+    });
+
+    expect(fs.mkdirSync).toHaveBeenCalledWith(dirname(newLogFilePath));
+    expect(fs.existsSync).toHaveBeenCalledWith(newLogFilePath);
+    expect(fs.openSync).toHaveBeenCalledWith(newLogFilePath, "w");
   });
 
   test("does not create same log file more than once", () => {
@@ -73,6 +76,8 @@ describe("All Tests", () => {
     fs.existsSync = jest
       .fn()
       .mockReturnValueOnce(false)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true)
       .mockReturnValueOnce(true);
 
     new Logger({
@@ -83,7 +88,7 @@ describe("All Tests", () => {
       file: logFilePath,
     });
 
-    expect(fs.existsSync).toHaveBeenCalledTimes(2);
+    expect(fs.existsSync).toHaveBeenCalledTimes(4);
     expect(fs.openSync).toHaveBeenCalledTimes(1);
   });
 
@@ -135,9 +140,18 @@ describe("All Tests", () => {
     logger.error(message);
     let errorMessage = logger.formatter(message, "error");
 
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, infoMessage);
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, warnMessage);
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, errorMessage);
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      infoMessage + "\n"
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      warnMessage + "\n"
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      errorMessage + "\n"
+    );
   });
 
   test("prints on both transports", () => {
@@ -160,9 +174,18 @@ describe("All Tests", () => {
     expect(console.warn).toHaveBeenCalledWith(warnMessage);
     expect(console.error).toHaveBeenCalledWith(errorMessage);
 
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, infoMessage);
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, warnMessage);
-    expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, errorMessage);
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      infoMessage + "\n"
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      warnMessage + "\n"
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      errorMessage + "\n"
+    );
   });
 
   test("prints with custom format", () => {
@@ -186,15 +209,15 @@ describe("All Tests", () => {
 
     expect(fs.appendFileSync).toHaveBeenCalledWith(
       logFilePath,
-      format(message, "info")
+      format(message, "info") + "\n"
     );
     expect(fs.appendFileSync).toHaveBeenCalledWith(
       logFilePath,
-      format(message, "warn")
+      format(message, "warn") + "\n"
     );
     expect(fs.appendFileSync).toHaveBeenCalledWith(
       logFilePath,
-      format(message, "error")
+      format(message, "error") + "\n"
     );
 
     expect(console.info).toHaveBeenCalledWith(format(message, "info"));

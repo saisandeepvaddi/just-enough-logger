@@ -1,5 +1,5 @@
-import { resolve } from "path";
-import { existsSync, openSync, appendFileSync } from "fs";
+import { resolve, parse } from "path";
+import { existsSync, openSync, appendFileSync, mkdirSync } from "fs";
 
 export type Transport = "file" | "console";
 export type Level = "info" | "warn" | "error";
@@ -110,15 +110,23 @@ class Logger implements ILogger {
 
   private __createLogFile() {
     const { file } = this.options;
-    if (file && !existsSync(file)) {
-      openSync(file, "w");
+    if (file) {
+      const { dir } = parse(file);
+
+      if (!existsSync(dir)) {
+        mkdirSync(dir);
+      }
+
+      if (!existsSync(file)) {
+        openSync(file, "w");
+      }
     }
   }
 
   private __writeToFile(message: string) {
     const { file } = this.options;
     if (file) {
-      appendFileSync(file, message);
+      appendFileSync(file, message + "\n");
     }
   }
 
