@@ -16,12 +16,23 @@ interface ILogger {
   error: (message: string) => void;
 }
 
+/**
+ *
+ *
+ * @class Logger
+ * @implements {ILogger}
+ */
 class Logger implements ILogger {
   options: ILoggerOptions = {
     transports: ["file", "console"],
     file: resolve(process.cwd(), "log.log"),
   };
 
+  /**
+   * Creates an instance of Logger.
+   * @param {ILoggerOptions} [options]
+   * @memberof Logger
+   */
   constructor(options?: ILoggerOptions) {
     this.options = {
       ...this.options,
@@ -34,6 +45,36 @@ class Logger implements ILogger {
   }
 
   /**
+   * Prints message with INFO level
+   *
+   * @param {string} message
+   * @memberof Logger
+   */
+  public info(message: string) {
+    this.__write(message, "info");
+  }
+
+  /**
+   * Prints message with WARN level
+   *
+   * @param {string} message
+   * @memberof Logger
+   */
+  public warn(message: string) {
+    this.__write(message, "warn");
+  }
+
+  /**
+   * Prints message with ERROR level
+   *
+   * @param {string} message
+   * @memberof Logger
+   */
+  public error(message: string) {
+    this.__write(message, "error");
+  }
+
+  /**
    * Returns the log file path for this logger instance.
    *
    * @returns {string} Path of log file.
@@ -41,6 +82,18 @@ class Logger implements ILogger {
    */
   public getLogFilePath() {
     return this.options.file;
+  }
+
+  /**
+   * Creates output custom format. Default is: `new Date().toLocaleString() : [LEVEL] : message`
+   *
+   * @param {string} message
+   * @param {Level} level
+   * @returns {string} The output message
+   * @memberof Logger
+   */
+  public formatter(message: string, level: Level) {
+    return `${this.__getDate()} : [${level.toUpperCase()}] : ${message}`;
   }
 
   private __getDate() {
@@ -73,34 +126,10 @@ class Logger implements ILogger {
     console[level](message);
   }
 
-  public formatter(message: string, level: Level) {
-    return `${this.__getDate()} : [${level.toUpperCase()}] : ${message}`;
-  }
-
-  public info(message: string) {
-    let formattedMessage = this.formatter(message, "info");
+  private __write(message: string, level: Level) {
+    let formattedMessage = this.formatter(message, level);
     if (this.__shouldWriteToConsole()) {
-      this.__writeToConsole(formattedMessage, "info");
-    }
-    if (this.__shouldWriteToFile()) {
-      this.__writeToFile(formattedMessage);
-    }
-  }
-
-  public warn(message: string) {
-    let formattedMessage = this.formatter(message, "warn");
-    if (this.__shouldWriteToConsole()) {
-      this.__writeToConsole(formattedMessage, "warn");
-    }
-    if (this.__shouldWriteToFile()) {
-      this.__writeToFile(formattedMessage);
-    }
-  }
-
-  public error(message: string) {
-    let formattedMessage = this.formatter(message, "error");
-    if (this.__shouldWriteToConsole()) {
-      this.__writeToConsole(formattedMessage, "error");
+      this.__writeToConsole(formattedMessage, level);
     }
     if (this.__shouldWriteToFile()) {
       this.__writeToFile(formattedMessage);

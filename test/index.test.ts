@@ -140,16 +140,6 @@ describe("All Tests", () => {
     expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, errorMessage);
   });
 
-  test("will not write to file if file is empty even with transport", () => {
-    new Logger({
-      transports: ["file"],
-      file: "",
-    });
-
-    expect(fs.existsSync).not.toHaveBeenCalled();
-    expect(fs.appendFileSync).not.toHaveBeenCalled();
-  });
-
   test("prints on both transports", () => {
     let logFilePath = resolve(__dirname, "test.log");
 
@@ -173,6 +163,43 @@ describe("All Tests", () => {
     expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, infoMessage);
     expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, warnMessage);
     expect(fs.appendFileSync).toHaveBeenCalledWith(logFilePath, errorMessage);
+  });
+
+  test("prints with custom format", () => {
+    let logFilePath = resolve(__dirname, "test.log");
+
+    let logger = new Logger({
+      file: logFilePath,
+    });
+
+    let format = (message: string, level: "info" | "warn" | "error") => {
+      return `${level}:${message}`;
+    };
+
+    logger.formatter = format;
+
+    let message = "test message";
+
+    logger.info("test message");
+    logger.warn("test message");
+    logger.error("test message");
+
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      format(message, "info")
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      format(message, "warn")
+    );
+    expect(fs.appendFileSync).toHaveBeenCalledWith(
+      logFilePath,
+      format(message, "error")
+    );
+
+    expect(console.info).toHaveBeenCalledWith(format(message, "info"));
+    expect(console.warn).toHaveBeenCalledWith(format(message, "warn"));
+    expect(console.error).toHaveBeenCalledWith(format(message, "error"));
   });
 
   afterEach(() => {

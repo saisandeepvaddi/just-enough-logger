@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1569986114849" clover="3.2.0">
-  <project timestamp="1569986114849" name="All files">
-    <metrics statements="47" coveredstatements="47" conditionals="20" coveredconditionals="19" methods="13" coveredmethods="13" elements="80" coveredelements="79" complexity="0" loc="47" ncloc="47" packages="1" files="1" classes="1"/>
+<coverage generated="1569986416835" clover="3.2.0">
+  <project timestamp="1569986416835" name="All files">
+    <metrics statements="41" coveredstatements="41" conditionals="12" coveredconditionals="11" methods="14" coveredmethods="14" elements="67" coveredelements="66" complexity="0" loc="41" ncloc="41" packages="1" files="1" classes="1"/>
     <file name="index.ts" path="D:\Programming\just-enough-logger\src\index.ts">
-      <metrics statements="47" coveredstatements="47" conditionals="20" coveredconditionals="19" methods="13" coveredmethods="13"/>
+      <metrics statements="41" coveredstatements="41" conditionals="12" coveredconditionals="11" methods="14" coveredmethods="14"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="19" count="1" type="stmt"/>
@@ -32,25 +32,19 @@
       <line num="76" count="1" type="stmt"/>
       <line num="77" count="22" type="stmt"/>
       <line num="80" count="1" type="stmt"/>
-      <line num="81" count="5" type="stmt"/>
-      <line num="82" count="5" type="cond" truecount="2" falsecount="0"/>
-      <line num="83" count="3" type="stmt"/>
-      <line num="85" count="5" type="cond" truecount="2" falsecount="0"/>
-      <line num="86" count="3" type="stmt"/>
+      <line num="81" count="13" type="stmt"/>
+      <line num="82" count="13" type="cond" truecount="2" falsecount="0"/>
+      <line num="83" count="9" type="stmt"/>
+      <line num="85" count="13" type="cond" truecount="2" falsecount="0"/>
+      <line num="86" count="7" type="stmt"/>
       <line num="90" count="1" type="stmt"/>
-      <line num="91" count="4" type="stmt"/>
-      <line num="92" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="93" count="3" type="stmt"/>
-      <line num="95" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="96" count="2" type="stmt"/>
-      <line num="100" count="1" type="stmt"/>
-      <line num="101" count="4" type="stmt"/>
-      <line num="102" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="103" count="3" type="stmt"/>
-      <line num="105" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="106" count="2" type="stmt"/>
-      <line num="109" count="1" type="stmt"/>
-      <line num="111" count="1" type="stmt"/>
+      <line num="91" count="5" type="stmt"/>
+      <line num="94" count="1" type="stmt"/>
+      <line num="95" count="4" type="stmt"/>
+      <line num="98" count="1" type="stmt"/>
+      <line num="99" count="4" type="stmt"/>
+      <line num="101" count="1" type="stmt"/>
+      <line num="103" count="1" type="stmt"/>
     </file>
   </project>
 </coverage>
