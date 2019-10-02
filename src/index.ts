@@ -13,6 +13,7 @@ export type Level = "info" | "warn" | "error";
 export interface ILoggerOptions {
   transports?: Transport[];
   file?: string;
+  formatter?: (message: string, level: Level) => string;
 }
 
 /**
@@ -37,6 +38,7 @@ class Logger implements ILogger {
   options: ILoggerOptions = {
     transports: ["file", "console"],
     file: resolve(process.cwd(), "log.log"),
+    formatter: this.__formatter,
   };
 
   /**
@@ -92,7 +94,12 @@ class Logger implements ILogger {
    * @memberof Logger
    */
   public getLogFilePath() {
-    return this.options.file;
+    const { file } = this.options;
+    if (file) {
+      return resolve(file);
+    }
+
+    return null;
   }
 
   /**
@@ -103,12 +110,8 @@ class Logger implements ILogger {
    * @returns {string} The output message
    * @memberof Logger
    */
-  public formatter(message: string, level: Level) {
-    return `${this.__getDate()} : [${level.toUpperCase()}] : ${message}`;
-  }
-
-  private __getDate() {
-    return new Date().toLocaleString();
+  private __formatter(message: string, level: Level) {
+    return `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`;
   }
 
   private __shouldWriteToFile(): boolean {
@@ -146,12 +149,15 @@ class Logger implements ILogger {
   }
 
   private __write(message: string, level: Level) {
-    let formattedMessage = this.formatter(message, level);
-    if (this.__shouldWriteToConsole()) {
-      this.__writeToConsole(formattedMessage, level);
-    }
-    if (this.__shouldWriteToFile()) {
-      this.__writeToFile(formattedMessage);
+    const { formatter } = this.options;
+    if (formatter) {
+      let formattedMessage = formatter(message, level);
+      if (this.__shouldWriteToConsole()) {
+        this.__writeToConsole(formattedMessage, level);
+      }
+      if (this.__shouldWriteToFile()) {
+        this.__writeToFile(formattedMessage);
+      }
     }
   }
 }

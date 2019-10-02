@@ -1,4 +1,4 @@
-import Logger from "../src";
+import Logger, { Level } from "../src";
 import fs from "fs";
 import { resolve, dirname } from "path";
 
@@ -11,6 +11,10 @@ global.console = {
   warn: jest.fn(str => str),
   error: jest.fn(str => str),
 };
+
+function __defaultFormatter(message: string, level: Level) {
+  return `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`;
+}
 
 describe("All Tests", () => {
   test("only uses specified transports", () => {
@@ -113,11 +117,11 @@ describe("All Tests", () => {
 
     let message = "Test message";
     logger.info(message);
-    let infoMessage = logger.formatter(message, "info");
+    let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
-    let warnMessage = logger.formatter(message, "warn");
+    let warnMessage = __defaultFormatter(message, "warn");
     logger.error(message);
-    let errorMessage = logger.formatter(message, "error");
+    let errorMessage = __defaultFormatter(message, "error");
 
     expect(console.info).toHaveBeenCalledWith(infoMessage);
     expect(console.warn).toHaveBeenCalledWith(warnMessage);
@@ -134,11 +138,11 @@ describe("All Tests", () => {
 
     let message = "Test message";
     logger.info(message);
-    let infoMessage = logger.formatter(message, "info");
+    let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
-    let warnMessage = logger.formatter(message, "warn");
+    let warnMessage = __defaultFormatter(message, "warn");
     logger.error(message);
-    let errorMessage = logger.formatter(message, "error");
+    let errorMessage = __defaultFormatter(message, "error");
 
     expect(fs.appendFileSync).toHaveBeenCalledWith(
       logFilePath,
@@ -164,11 +168,11 @@ describe("All Tests", () => {
 
     let message = "Test message";
     logger.info(message);
-    let infoMessage = logger.formatter(message, "info");
+    let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
-    let warnMessage = logger.formatter(message, "warn");
+    let warnMessage = __defaultFormatter(message, "warn");
     logger.error(message);
-    let errorMessage = logger.formatter(message, "error");
+    let errorMessage = __defaultFormatter(message, "error");
 
     expect(console.info).toHaveBeenCalledWith(infoMessage);
     expect(console.warn).toHaveBeenCalledWith(warnMessage);
@@ -191,15 +195,14 @@ describe("All Tests", () => {
   test("prints with custom format", () => {
     let logFilePath = resolve(__dirname, "test.log");
 
-    let logger = new Logger({
-      file: logFilePath,
-    });
-
     let format = (message: string, level: "info" | "warn" | "error") => {
       return `${level}:${message}`;
     };
 
-    logger.formatter = format;
+    let logger = new Logger({
+      file: logFilePath,
+      formatter: format,
+    });
 
     let message = "test message";
 
