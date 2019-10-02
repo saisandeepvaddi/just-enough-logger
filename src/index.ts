@@ -43,7 +43,7 @@ class Logger implements ILogger {
   };
 
   /**
-   * Creates an instance of Logger.
+   * Creates an instance of Logger
    * @param {ILoggerOptions} [options]
    * @memberof Logger
    */
@@ -115,14 +115,34 @@ class Logger implements ILogger {
     return `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`;
   }
 
+  /**
+   * Checks if file transport is selected
+   *
+   * @private
+   * @returns {boolean}
+   * @memberof Logger
+   */
   private __shouldWriteToFile(): boolean {
     return this.options.transports!.indexOf("file") > -1;
   }
 
+  /**
+   * Checks if console transport is selected
+   *
+   * @private
+   * @returns {boolean}
+   * @memberof Logger
+   */
   private __shouldWriteToConsole(): boolean {
     return this.options.transports!.indexOf("console") > -1;
   }
 
+  /**
+   * Creates log file if it doesn't exist
+   *
+   * @private
+   * @memberof Logger
+   */
   private __createLogFile() {
     const { file } = this.options;
     if (file) {
@@ -138,6 +158,13 @@ class Logger implements ILogger {
     }
   }
 
+  /**
+   * Writes log message to file
+   *
+   * @private
+   * @param {string} message
+   * @memberof Logger
+   */
   private __writeToFile(message: string) {
     const { file } = this.options;
     if (file) {
@@ -145,6 +172,14 @@ class Logger implements ILogger {
     }
   }
 
+  /**
+   * Writes log message to console
+   *
+   * @private
+   * @param {string} message
+   * @param {Level} level
+   * @memberof Logger
+   */
   private __writeToConsole(message: string, level: Level) {
     switch (level) {
       case "warn":
@@ -159,6 +194,14 @@ class Logger implements ILogger {
     }
   }
 
+  /**
+   * Calls appropriate method to write formatted message
+   *
+   * @private
+   * @param {string} message
+   * @param {Level} level
+   * @memberof Logger
+   */
   private __write(message: string, level: Level) {
     const { formatter } = this.options;
     if (formatter) {
