@@ -1,5 +1,6 @@
 import { resolve, parse } from "path";
 import { existsSync, openSync, appendFileSync, mkdirSync } from "fs";
+import { yellow, red } from "colors";
 
 export type Transport = "file" | "console";
 export type Level = "info" | "warn" | "error";
@@ -145,7 +146,17 @@ class Logger implements ILogger {
   }
 
   private __writeToConsole(message: string, level: Level) {
-    console[level](message);
+    switch (level) {
+      case "warn":
+        console[level](yellow(message));
+        break;
+      case "error":
+        console[level](red(message));
+        break;
+      case "info":
+        console[level](message);
+        break;
+    }
   }
 
   private __write(message: string, level: Level) {

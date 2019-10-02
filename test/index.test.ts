@@ -1,6 +1,7 @@
 import Logger, { Level } from "../src";
 import fs from "fs";
 import { resolve, dirname } from "path";
+import { yellow, red } from "colors";
 
 jest.mock("fs");
 let originalConsole = global.console;
@@ -124,8 +125,8 @@ describe("All Tests", () => {
     let errorMessage = __defaultFormatter(message, "error");
 
     expect(console.info).toHaveBeenCalledWith(infoMessage);
-    expect(console.warn).toHaveBeenCalledWith(warnMessage);
-    expect(console.error).toHaveBeenCalledWith(errorMessage);
+    expect(console.warn).toHaveBeenCalledWith(yellow(warnMessage));
+    expect(console.error).toHaveBeenCalledWith(red(errorMessage));
   });
 
   test("logs to file with correct level", () => {
@@ -175,8 +176,8 @@ describe("All Tests", () => {
     let errorMessage = __defaultFormatter(message, "error");
 
     expect(console.info).toHaveBeenCalledWith(infoMessage);
-    expect(console.warn).toHaveBeenCalledWith(warnMessage);
-    expect(console.error).toHaveBeenCalledWith(errorMessage);
+    expect(console.warn).toHaveBeenCalledWith(yellow(warnMessage));
+    expect(console.error).toHaveBeenCalledWith(red(errorMessage));
 
     expect(fs.appendFileSync).toHaveBeenCalledWith(
       logFilePath,
@@ -224,8 +225,8 @@ describe("All Tests", () => {
     );
 
     expect(console.info).toHaveBeenCalledWith(format(message, "info"));
-    expect(console.warn).toHaveBeenCalledWith(format(message, "warn"));
-    expect(console.error).toHaveBeenCalledWith(format(message, "error"));
+    expect(console.warn).toHaveBeenCalledWith(yellow(format(message, "warn")));
+    expect(console.error).toHaveBeenCalledWith(red(format(message, "error")));
   });
 
   afterEach(() => {
