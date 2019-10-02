@@ -63,11 +63,20 @@ let log = new Logger({
 - Valid Values: `/path/to/log.log`
 - **Default**: `[current_directory]/log.log`
 
+## formatter
+
+- Custom formatter
+- Type: Function
+- Signature: `(message: string, level: "info" | "warn" | "error") => string`
+- **Default**: Returns log in format `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`
+
 Example:
 
 ```js
 let log = new Logger({
-  file: path.resolve(__dirname, "my_log.log"),
+  formatter: (message, level) => {
+    return `${new Date()} ${level} ${message}`;
+  },
 });
 ```
 
@@ -81,14 +90,9 @@ Methods work on instance of Logger
 
 ```js
 let logger = new Logger();
-console.log(logger.getLogFilePath()); // d:\Programming\my-project\log.log
+console.log(logger.getLogFilePath()); // c:\Programming\my-project\log.log
 ```
 
-## formatter(message: string, level: Level): string
+# License
 
-- Use this to change the output format.
-
-```js
-let logger = new Logger();
-logger.formatter = {};
-```
+[MIT](/LICENSE) - [@saisandeepvaddi](https://github.com/saisandeepvaddi)
