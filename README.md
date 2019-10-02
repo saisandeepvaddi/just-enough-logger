@@ -63,6 +63,14 @@ let log = new Logger({
 - Valid Values: `/path/to/log.log`
 - **Default**: `[current_directory]/log.log`
 
+Example:
+
+```js
+let log = new Logger({
+  file: path.resolve(__dirname, "logs", "my-log.log"),
+});
+```
+
 ## formatter
 
 - Custom formatter
