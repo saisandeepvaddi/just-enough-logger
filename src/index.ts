@@ -4,11 +4,22 @@ import { existsSync, openSync, appendFileSync, mkdirSync } from "fs";
 export type Transport = "file" | "console";
 export type Level = "info" | "warn" | "error";
 
+/**
+ *Logger options interface
+ *
+ * @export
+ * @interface ILoggerOptions
+ */
 export interface ILoggerOptions {
   transports?: Transport[];
   file?: string;
 }
 
+/**
+ *
+ *
+ * @interface ILogger
+ */
 interface ILogger {
   options: ILoggerOptions;
   info: (message: string) => void;
@@ -17,7 +28,7 @@ interface ILogger {
 }
 
 /**
- *
+ * Logger class
  *
  * @class Logger
  * @implements {ILogger}
@@ -85,7 +96,7 @@ class Logger implements ILogger {
   }
 
   /**
-   * Creates output custom format. Default is: `new Date().toLocaleString() : [LEVEL] : message`
+   * Creates log message with custom format. Default is: `new Date().toLocaleString() : [LEVEL] : message`
    *
    * @param {string} message
    * @param {Level} level
