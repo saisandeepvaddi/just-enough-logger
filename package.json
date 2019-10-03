@@ -5,7 +5,9 @@
   "module": "dist/just-enough-logger.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "package.json"
   ],
   "scripts": {
     "start": "tsdx watch",
@@ -34,5 +36,18 @@
   },
   "dependencies": {
     "colors": "^1.4.0"
-  }
+  },
+  "keywords": [
+    "logger",
+    "log",
+    "logging",
+    "minimal",
+    "file-log"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saisandeepvaddi/just-enough-logger.git"
+  },
+  "author": "Sai Sandeep Vaddi <saisandeepvaddi@gmail.com>"
 }
