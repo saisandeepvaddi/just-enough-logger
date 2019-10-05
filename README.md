@@ -15,10 +15,6 @@ or
 ```js
 const Logger = require("just-enough-logger").default; // Don't forget default;
 
-or;
-
-import Logger from "just-enough-logger"; // ES6 or TS
-
 let log = new Logger();
 
 // let log = new Logger(options?); // Check options
