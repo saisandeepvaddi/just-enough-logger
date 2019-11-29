@@ -1,5 +1,11 @@
 import { resolve, parse } from "path";
-import { existsSync, openSync, appendFileSync, mkdirSync } from "fs";
+import {
+  existsSync,
+  openSync,
+  mkdirSync,
+  WriteStream,
+  createWriteStream,
+} from "fs";
 import { yellow, red } from "colors";
 
 export type Transport = "file" | "console";
@@ -35,12 +41,14 @@ interface ILogger {
  * @class Logger
  * @implements {ILogger}
  */
-class Logger implements ILogger {
+export class Logger implements ILogger {
   options: ILoggerOptions = {
     transports: ["file", "console"],
     file: resolve(process.cwd(), "log.log"),
     formatter: this.__formatter,
   };
+
+  private __fileStream: WriteStream | null = null;
 
   /**
    * Creates an instance of Logger
@@ -55,6 +63,7 @@ class Logger implements ILogger {
 
     if (this.__shouldWriteToFile()) {
       this.__createLogFile();
+      this.__fileStream = createWriteStream(this.options.file!, { flags: "a" });
     }
   }
 
@@ -86,21 +95,6 @@ class Logger implements ILogger {
    */
   public error(message: string) {
     this.__write(message, "error");
-  }
-
-  /**
-   * Returns the log file path for this logger instance.
-   *
-   * @returns {string} Path of log file.
-   * @memberof Logger
-   */
-  public getLogFilePath() {
-    const { file } = this.options;
-    if (file) {
-      return resolve(file);
-    }
-
-    return null;
   }
 
   /**
@@ -167,8 +161,8 @@ class Logger implements ILogger {
    */
   private __writeToFile(message: string) {
     const { file } = this.options;
-    if (file) {
-      appendFileSync(file, message + "\n");
+    if (file && this.__fileStream) {
+      this.__fileStream.write(message + "\n");
     }
   }
 
@@ -214,6 +208,32 @@ class Logger implements ILogger {
       }
     }
   }
+
+  /**
+   * Returns the log file path for this logger instance.
+   *
+   * @returns {string} Path of log file.
+   * @memberof Logger
+   */
+  public getLogFilePath() {
+    const { file } = this.options;
+    if (file) {
+      return resolve(file);
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns the file stream of the log file or null if no file transport available.
+   *
+   * @returns {WritableStream}
+   * @memberof Logger
+   */
+  public getLogStream(): WriteStream | null {
+    return this.__fileStream;
+  }
 }
 
+// Keep default export for backward compatibility.
 export default Logger;

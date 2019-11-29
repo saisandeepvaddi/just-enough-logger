@@ -13,7 +13,10 @@ or
 # Usage
 
 ```js
-const Logger = require("just-enough-logger").default; // Don't forget default;
+const { Logger } = require("just-enough-logger");
+// or
+// [DEPRECATED] const Logger = require("just-enough-logger").default;
+// Default export is available for backward compatibility. It'll be removed in next version.
 
 let log = new Logger();
 
@@ -95,6 +98,15 @@ Methods work on instance of Logger
 ```js
 let logger = new Logger();
 console.log(logger.getLogFilePath()); // c:\Programming\my-project\log.log
+```
+
+## getLogStream()
+
+- Returns `WriteStream` of log file or null if file transports is not present.
+
+```js
+let logger = new Logger();
+console.log(logger.getLogStream());
 ```
 
 # License

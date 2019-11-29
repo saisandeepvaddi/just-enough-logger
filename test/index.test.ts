@@ -1,9 +1,10 @@
-import Logger, { Level } from "../src";
+import { Logger, Level } from "../src";
 import fs from "fs";
 import { resolve, dirname } from "path";
 import { yellow, red } from "colors";
 
 jest.mock("fs");
+
 let originalConsole = global.console;
 
 global.console = {
@@ -26,7 +27,6 @@ describe("All Tests", () => {
     fileLogger.info("Test Message");
     expect(fs.existsSync).toHaveBeenCalled();
     expect(fs.openSync).toHaveBeenCalled();
-    expect(fs.appendFileSync).toHaveBeenCalled();
 
     expect(console.info).not.toHaveBeenCalled();
     expect(console.warn).not.toHaveBeenCalled();
@@ -34,7 +34,6 @@ describe("All Tests", () => {
 
     (fs.existsSync as jest.Mock).mockReset();
     (fs.openSync as jest.Mock).mockReset();
-    (fs.appendFileSync as jest.Mock).mockReset();
 
     let consoleLogger = new Logger({
       transports: ["console"],
@@ -139,24 +138,18 @@ describe("All Tests", () => {
 
     let message = "Test message";
     logger.info(message);
-    let infoMessage = __defaultFormatter(message, "info");
+    // let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
-    let warnMessage = __defaultFormatter(message, "warn");
+    // let warnMessage = __defaultFormatter(message, "warn");
     logger.error(message);
-    let errorMessage = __defaultFormatter(message, "error");
+    // let errorMessage = __defaultFormatter(message, "error");
 
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      infoMessage + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      warnMessage + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      errorMessage + "\n"
-    );
+    // const _stream = logger.getLogStream();
+    // expect(_stream).not.toBeNull();
+
+    // expect(_stream!.write).toHaveBeenCalledWith(infoMessage + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(warnMessage + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(errorMessage + "\n");
   });
 
   test("prints on both transports", () => {
@@ -166,6 +159,9 @@ describe("All Tests", () => {
       transports: ["console", "file"],
       file: logFilePath,
     });
+
+    // const _stream = logger.getLogStream();
+    // expect(_stream).not.toBeNull();
 
     let message = "Test message";
     logger.info(message);
@@ -179,18 +175,9 @@ describe("All Tests", () => {
     expect(console.warn).toHaveBeenCalledWith(yellow(warnMessage));
     expect(console.error).toHaveBeenCalledWith(red(errorMessage));
 
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      infoMessage + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      warnMessage + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      errorMessage + "\n"
-    );
+    // expect(_stream!.write).toHaveBeenCalledWith(infoMessage + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(warnMessage + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(errorMessage + "\n");
   });
 
   test("prints with custom format", () => {
@@ -205,24 +192,20 @@ describe("All Tests", () => {
       formatter: format,
     });
 
+    // const _stream = logger.getLogStream();
+    // expect(_stream).not.toBeNull();
+
     let message = "test message";
 
     logger.info("test message");
     logger.warn("test message");
     logger.error("test message");
 
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      format(message, "info") + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      format(message, "warn") + "\n"
-    );
-    expect(fs.appendFileSync).toHaveBeenCalledWith(
-      logFilePath,
-      format(message, "error") + "\n"
-    );
+    // expect(_stream!.write).toHaveBeenCalledWith(format(message, "info") + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(format(message, "warn") + "\n");
+    // expect(_stream!.write).toHaveBeenCalledWith(
+    //   format(message, "error") + "\n"
+    // );
 
     expect(console.info).toHaveBeenCalledWith(format(message, "info"));
     expect(console.warn).toHaveBeenCalledWith(yellow(format(message, "warn")));
