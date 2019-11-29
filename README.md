@@ -97,6 +97,15 @@ let logger = new Logger();
 console.log(logger.getLogFilePath()); // c:\Programming\my-project\log.log
 ```
 
+## getLogStream()
+
+- Returns `WriteStream` of log file or null if file transports is not present.
+
+```js
+let logger = new Logger();
+console.log(logger.getLogStream());
+```
+
 # License
 
 [MIT](/LICENSE) - [@saisandeepvaddi](https://github.com/saisandeepvaddi)
