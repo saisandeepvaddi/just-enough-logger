@@ -41,7 +41,7 @@ interface ILogger {
  * @class Logger
  * @implements {ILogger}
  */
-class Logger implements ILogger {
+export class Logger implements ILogger {
   options: ILoggerOptions = {
     transports: ["file", "console"],
     file: resolve(process.cwd(), "log.log"),
@@ -235,4 +235,5 @@ class Logger implements ILogger {
   }
 }
 
+// Keep default export for backward compatibility.
 export default Logger;

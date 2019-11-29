@@ -1,4 +1,4 @@
-import Logger, { Level } from "../src";
+import { Logger, Level } from "../src";
 import fs from "fs";
 import { resolve, dirname } from "path";
 import { yellow, red } from "colors";

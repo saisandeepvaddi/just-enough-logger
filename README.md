@@ -13,7 +13,9 @@ or
 # Usage
 
 ```js
-const Logger = require("just-enough-logger").default; // Don't forget default;
+const { Logger } = require("just-enough-logger");
+// or
+// [DEPRECATED] const Logger = require("just-enough-logger").default; // Default export is available for backward compatibility with old version.
 
 let log = new Logger();
 
