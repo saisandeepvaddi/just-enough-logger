@@ -28,11 +28,11 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "husky": "^3.0.7",
+    "@types/jest": "^24.9.1",
+    "husky": "^3.1.0",
     "tsdx": "^0.9.3",
-    "tslib": "^1.10.0",
-    "typescript": "^3.6.3"
+    "tslib": "^1.11.0",
+    "typescript": "^3.8.2"
   },
   "dependencies": {
     "colors": "^1.4.0"
