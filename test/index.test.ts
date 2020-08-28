@@ -9,12 +9,16 @@ let originalConsole = global.console;
 
 global.console = {
   ...global.console,
+  log: jest.fn(str => str),
   info: jest.fn(str => str),
   warn: jest.fn(str => str),
   error: jest.fn(str => str),
 };
 
 function __defaultFormatter(message: string, level: Level) {
+  if (level === "log") {
+    return `${new Date().toLocaleString()} : ${message}`;
+  }
   return `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`;
 }
 
@@ -28,6 +32,7 @@ describe("All Tests", () => {
     expect(fs.existsSync).toHaveBeenCalled();
     expect(fs.openSync).toHaveBeenCalled();
 
+    expect(console.log).not.toHaveBeenCalled();
     expect(console.info).not.toHaveBeenCalled();
     expect(console.warn).not.toHaveBeenCalled();
     expect(console.error).not.toHaveBeenCalled();
@@ -39,6 +44,7 @@ describe("All Tests", () => {
       transports: ["console"],
     });
 
+    consoleLogger.log("Test Message");
     consoleLogger.info("Test Message");
     consoleLogger.warn("Test Message");
     consoleLogger.error("Test Message");
@@ -116,6 +122,8 @@ describe("All Tests", () => {
     });
 
     let message = "Test message";
+    logger.log(message);
+    let logMessage = __defaultFormatter(message, "log");
     logger.info(message);
     let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
@@ -123,6 +131,7 @@ describe("All Tests", () => {
     logger.error(message);
     let errorMessage = __defaultFormatter(message, "error");
 
+    expect(console.log).toHaveBeenCalledWith(logMessage);
     expect(console.info).toHaveBeenCalledWith(infoMessage);
     expect(console.warn).toHaveBeenCalledWith(yellow(warnMessage));
     expect(console.error).toHaveBeenCalledWith(red(errorMessage));
@@ -137,6 +146,8 @@ describe("All Tests", () => {
     });
 
     let message = "Test message";
+    logger.log(message);
+
     logger.info(message);
     // let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
@@ -164,6 +175,8 @@ describe("All Tests", () => {
     // expect(_stream).not.toBeNull();
 
     let message = "Test message";
+    logger.log(message);
+    let logMessage = __defaultFormatter(message, "log");
     logger.info(message);
     let infoMessage = __defaultFormatter(message, "info");
     logger.warn(message);
@@ -171,6 +184,7 @@ describe("All Tests", () => {
     logger.error(message);
     let errorMessage = __defaultFormatter(message, "error");
 
+    expect(console.log).toHaveBeenCalledWith(logMessage);
     expect(console.info).toHaveBeenCalledWith(infoMessage);
     expect(console.warn).toHaveBeenCalledWith(yellow(warnMessage));
     expect(console.error).toHaveBeenCalledWith(red(errorMessage));
@@ -183,7 +197,7 @@ describe("All Tests", () => {
   test("prints with custom format", () => {
     let logFilePath = resolve(__dirname, "test.log");
 
-    let format = (message: string, level: "info" | "warn" | "error") => {
+    let format = (message: string, level: Level) => {
       return `${level}:${message}`;
     };
 
@@ -197,6 +211,7 @@ describe("All Tests", () => {
 
     let message = "test message";
 
+    logger.log("test message");
     logger.info("test message");
     logger.warn("test message");
     logger.error("test message");
@@ -207,6 +222,7 @@ describe("All Tests", () => {
     //   format(message, "error") + "\n"
     // );
 
+    expect(console.log).toHaveBeenCalledWith(format(message, "log"));
     expect(console.info).toHaveBeenCalledWith(format(message, "info"));
     expect(console.warn).toHaveBeenCalledWith(yellow(format(message, "warn")));
     expect(console.error).toHaveBeenCalledWith(red(format(message, "error")));

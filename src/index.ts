@@ -9,7 +9,7 @@ import {
 import { yellow, red } from "colors";
 
 export type Transport = "file" | "console";
-export type Level = "info" | "warn" | "error";
+export type Level = "log" | "info" | "warn" | "error";
 
 /**
  *Logger options interface
@@ -30,6 +30,7 @@ export interface ILoggerOptions {
  */
 interface ILogger {
   options: ILoggerOptions;
+  log: (message: string) => void;
   info: (message: string) => void;
   warn: (message: string) => void;
   error: (message: string) => void;
@@ -65,6 +66,16 @@ export class Logger implements ILogger {
       this.__createLogFile();
       this.__fileStream = createWriteStream(this.options.file!, { flags: "a" });
     }
+  }
+
+  /**
+   * Prints message with LOG level
+   *
+   * @param {string} message
+   * @memberof Logger
+   */
+  public log(message: string) {
+    this.__write(message, "log");
   }
 
   /**
@@ -106,6 +117,10 @@ export class Logger implements ILogger {
    * @memberof Logger
    */
   private __formatter(message: string, level: Level) {
+    if (level === "log") {
+      return `${new Date().toLocaleString()} : ${message}`;
+    }
+
     return `${new Date().toLocaleString()} : [${level.toUpperCase()}] : ${message}`;
   }
 
@@ -183,6 +198,9 @@ export class Logger implements ILogger {
         console[level](red(message));
         break;
       case "info":
+        console[level](message);
+        break;
+      case "log":
         console[level](message);
         break;
     }
