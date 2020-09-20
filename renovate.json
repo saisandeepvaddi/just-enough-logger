@@ -1,0 +1,10 @@
+{
+  "extends": ["config:base"],
+  "pacakgeRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "schedule": ["after 10pm every weekend"]
+    }
+  ]
+}
